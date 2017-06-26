@@ -29,7 +29,7 @@
    &nbsp;<a href="https://en.wikipedia.org/wiki/List_of_most_expensive_paintings" target="_blank" style="color:blue;">(Source)</a></div>
   <!-- Begin D3 Javascript -->
   <script type="text/javascript">
-  d3.csv("/data/paint.csv", function(error, data) {
+  d3.csv("http://files.cargocollective.com/645228/paint.csv", function(error, data) {
      if (error) throw error;
             // format the data
             data.forEach(function(d) {
