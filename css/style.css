@@ -9,13 +9,14 @@ body {
     background: #000;
     padding: auto;
     text-transform: uppercase;
-    /*position: static;*/
-    /*overflow-y: hidden;*/
+    position: static;
+    overflow-y: hidden;
     overflow-x: scroll;
+    height: 100%;
     /*width: 400%;*/
     /*position: static;*/
     /*display: inline-block;*/
-    margin: auto;
+    /*margin: auto;*/
 }
 
 /*
@@ -85,7 +86,7 @@ h1 {
   z-index: 12;
   overflow-y:auto;
   width: 412px;
-  max-height: 86.5%;
+  max-height: 87.8%;
   padding: 14px;
   background: white;
   opacity: 1;
@@ -120,6 +121,12 @@ display:none;
 g.y.axis {
   /*display: block;*/
   display: none;
+}
+
+.xAxis{
+  position: fixed;
+  display: block;
+  bottom: -0.1em;
 }
 
 .label {
