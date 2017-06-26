@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <!-- Load D3 from site -->
+    <!-- <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+    <script src="http://d3js.org/d3.v4.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+    <meta charset="utf-8">
+    <meta year="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Suez+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cinzel:900" rel="stylesheet">
+    <title>The 50 Most Expensive Paintings</title>
+    <meta year="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+  <div class="header">
+      <h1>The 50 Most Expensive Paintings</h1>
+  </div>
+  <div class="sub-header">
+   This word map shows the information of 50 most expensive paintings. The color of each title shows the most dominant color of the painting. For the system of word map, the X-value represents the year that the painting is created, and the Y-value and text size represent the price of the painting. The overlapping texts could be hard to read, but you could have a chance to find the similarities between them. Once you click on the title, you can get the information of the painting.
+   &nbsp;<a href="https://en.wikipedia.org/wiki/List_of_most_expensive_paintings" target="_blank" style="color:blue;">(Source)</a></div>
+  <!-- Begin D3 Javascript -->
+  <script type="text/javascript">
+  d3.csv("/data/paint.csv", function(error, data) {
+     if (error) throw error;
+            // format the data
+            data.forEach(function(d) {
+             d.year = +d.year;
+             d.colorcode = d.colorcode;
+             d.price = +d.price;
+             d.name = d.name;
+             d.nation = d.nation;
+             d.artist = d.artist;
+             d.img = d.img;
+             d.nat = d.nat;
+             d.rank = d.rank;
+             d.info = d.info;
+       });
+
+    // ===== Start Scatterplot =====
+    // Setup settings for graphic
+    var body = d3.select('body');
+    var width = window.innerHeight,
+        height = window.innerHeight-50;
+    var padding = 0;
+    var margin = { top: 50, right: 15, bottom: 15, left: 15};
+    var zoom = d3.zoom()
+        .on("zoom", zoomFunction);
+
+    var xScale = d3.scaleLinear()
+        .range([0, width*3])
+        .domain(d3.extent(data, function(d) {
+          return d.year;
+       }));
+
+    var yScale = d3.scaleLinear()
+        .range([height, 0])
+        .domain([83, d3.max(data, function(d) {
+            return d.price;  // gets the input domain as the second column of array
+        })]);
+
+    var xAxis = d3.axisBottom(xScale)
+      // .attr("class", "xaxis")
+      .scale(xScale)
+      // .ticks(50)
+      // .ticks(d3.timeYear)
+      .tickPadding([0])
+      .tickFormat(d3.format("d"))
+      .tickValues(d3.range(1490, 2010, 10));
+
+    var yAxis = d3.axisLeft(yScale)
+      .scale(yScale)
+      .tickValues(0);
+      // .orient("left")
+      // .ticks(5)
+      // .tickPadding([10]);
+
+    var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+   // SVG
+  	var svg = body.append('svg')
+  	    .attr('height',height + margin.top + margin.bottom)
+  	    .attr('width',width*3.6 + margin.left + margin.right)
+  	  .append('g')
+  	    .attr('transform','translate(' + margin.left + ',' + margin.top + ')');
+
+    function zoomFunction(){
+      // create new scale ojects based on event
+      var new_xScale = d3.event.transform.rescaleX(xScale)
+      var new_yScale = d3.event.transform.rescaleY(yScale)
+      console.log(d3.event.transform)
+
+      // update axes
+      xAxis.call(xAxis.scale(new_xScale));
+      yAxis.call(yAxis.scale(new_yScale));
+
+      // update circle
+      text.attr("transform", d3.event.transform)
+    };
+
+    svg.selectAll("text")
+        .data(data)
+        .enter()
+        .append("text")
+        //.text(function(d) {return d.name;})
+        // .text("<span style='background-color:#aaa'>" + function(d) {return d.name;} + "</span>")
+            //    <span style='background-color:#aaa'> </span>
+    //    <span style='background-color:#"+d.colorcode+"'>
+        .html(function(d) {return d.name;})
+        .attr('dx',function (d) { return xScale(d.year) })
+        .attr('dy',function (d) { return yScale(d.price) })
+        .attr("z-index",1)
+        .attr("font-family", "Cinzel") //.attr("font-weight", "400")
+        .attr("background-color", "#aaa")
+        .attr("font-size", function (d) {return d.price/7.5 + "px"})  // Font size
+        .attr("text-transform", "uppercase")
+        //.attr("opacity", function (d) {return d.price/100})
+        .attr("fill", function (d) { return "#" + d.colorcode})
+
+        .on("mouseover", function(d){
+          text.transition()
+            .duration(0)
+            .attr("z-index", 21)
+            .attr("background-color", "#aaa")
+          })
+
+        .on("click", function(d){
+        // console.log(d.price)
+        // tooltip.transition()
+        //    .duration(0)
+        //    .style("opacity", 0.9)
+        //    //tooltip.html("Artist: " + d.artist + "<br/>" + "Price: $" + d.price + "M" + "<br/>" + "Colorcode: #" + d.colorcode)
+        //    .style("left", (d3.event.pageX) + "px")
+        //    .style("top", (d3.event.pageY + 20) + "px")
+        //    .style("text-align", "left")
+         tooltip.transition()
+            .duration(0)
+            .style("opacity", 1)
+            //tooltip.html("Artist: " + d.artist + "<br/>" + "Price: $" + d.price + "M" + "<br/>" + "Colorcode: #" + d.colorcode)
+            .style("left", "0.75em")
+            .style("top", "2.8em")
+            .style("text-align", "left")
+          //  .attr("display", "inline-block")
+          //  tooltip2.html("<a href=" + d.img + " width='500'></a>")
+            tooltip.html('<img src="'+d.img+'" width="384" style="padding-bottom: 7px">' + "<br/>" +
+            "<span style='font-size: 1.2em; padding-bottom: 0.9em'>"+"<b>" + "&nbsp;#" + d.rank + ". " + d.name + " (" + d.year +")" + "</b>" + "</span>"+ "<br/>" +
+            "<p>Artist: " + d.artist + "<br/>" + "Price: $" + d.price + "M" + "<br/>" +
+            "<span style='padding-bottom: -10px'>" + "Dominant Color: " + "<span style='color:white; background-color:#"+d.colorcode+"'>" + "#" + d.colorcode + "</span>" + "</span>" + "<br/>" +
+            "<hr>" + "<span style='color: #555; font-size: 0.9em; padding-bottom: -10px'>" + d.info + "</span>"+"</p>")
+            // color: #aaa; '<a href="'+d.info+'" target="_blank" ><i>More info...</i></a>' + "</p>")
+            //tooltip.html("Artist: " + d.artist + "<br/>" + "Price: $" + d.price + "M" + "<br/>" + "Colorcode: #" + d.colorcode)
+            //  "<br>Year: <span style='color:#fff'>" + d.year +"</span>"
+
+            .on("click", function(d){
+            tooltip.transition()
+               .duration(0)
+               .style("opacity", 0)
+             })
+
+        // svg.transition()
+        //    .duration(200)
+        //    //.attr("opacity", 1)
+        //   //  .attr("z-index", 15)
+        //   .text(d.name)
+        //    .attr("transform", "scale(1)")
+        //    .attr("background-color", "white")
+        //    .attr("left",(d3.event.pageX) + "px")
+        //    .attr("top",(d3.event.pageY - 10) + "px")
+    })
+
+    .on("mouseout", function(d){
+      })
+      // tooltip.transition()
+      //    .duration(1000)
+      //    .style("opacity",0)
+
+      //  tooltip2.transition()
+      //     .duration(1000)
+      //     .style("opacity",0)
+
+      // svg.transition()
+      //     .duration(200)
+      //       //.attr("opacity", 1)
+      //      //  .attr("z-index", 15)
+      //     .attr("transform", "scale(1)")
+      // svg.transition()
+      //    .duration(500)
+      //    .attr("opacity",1);
+
+
+    // function mouseoverFunc(d) {
+    //   d3.select(this)
+    //   .transition()
+    //   .style("opacity", 1)
+    //   .attr("r", 10);
+    //
+    //   tooltip
+    //   .style("display", null)
+    //   .html("<p>$<span style='color:black'>" + d.price +"</span>"+ "</p>");
+    //   // .html("<p>$ <span style='color:#fff'>" + d.nick +"</span>" + "<br>Year: <span style='color:#fff'>" + d.year +"</span>" + "<br>Price: $<span style='color:#fff'> " + d.price + "</span>" + "</p>");
+    // }
+
+        // X-axis
+        svg.append('g')
+            .attr('class','axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(xAxis)
+          .append('text') // X-axis Label
+            .attr('class','label')
+            .attr('y',height)
+            .attr('x',width)
+            .attr('dy','.71em')
+            .attr("background-color", "#aaa")
+            //.style('text-anchor','center')
+            //.text('THE CREATED YEAR');
+            .html("THE CREATED YEAR");
+        // Y-axis
+        svg.append('g')
+            .attr('class', 'axis')
+            .call(yAxis)
+          .append('text') // y-axis Label
+            .attr('class','label')
+            .attr('transform','rotate(-90)')
+            .attr('y',height)
+            .attr('x',width)
+            .attr('dy','.71em')
+            //.style('text-anchor','center')
+            // .text('THE PRICE OF THE PAINTING');
+            .html("THE PRICE OF THE PAINTING");
+      });
+  </script>
+
+  </body>
+  <script src="js/d3v4+jetpack.js"></script>
+  <script src="js/sketch.js"></script>
+</html>

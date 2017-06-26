@@ -1,0 +1,136 @@
+
+html, body {
+    /*position: relative;*/
+    /*margin: 0.6em auto;*/
+    /*padding: auto;*/
+}
+
+body {
+    background: #000;
+    padding: auto;
+    text-transform: uppercase;
+    /*position: static;*/
+    /*overflow-y: hidden;*/
+    overflow-x: scroll;
+    /*width: 400%;*/
+    /*position: static;*/
+    /*display: inline-block;*/
+    margin: auto;
+}
+
+/*
+svg {
+    background-color: yellow;
+}*/
+
+/*hr  {border-width:0; background-color: #555;
+ height:1px; lineheight:0; display: inline-block; width:100%;
+}*/
+
+.axis path,
+  .axis line {
+      display: none;
+      /*stroke: 0px;*/
+      /*shape-rendering: crispEdges;*/
+  }
+
+  .axis text {
+      fill: #aaa;
+      font-family: 'PT Sans Narrow', 'Oswald', sans-serif;
+      font-weight: 400;
+      font-size: 1.2em;
+  }
+
+h1 {
+    position: fixed;
+    font-family: 'Cinzel', 'Suez One', 'Alfa Slab One', sans-serif;
+    font-weight: 900;
+    font-size: 1.37em;
+    color: #fff;
+    margin-top: 0.4em;
+    /*text-align: left;*/
+    padding-left: 0.6em;
+}
+
+.sub-header {
+    position: fixed;
+    font-family: 'PT Sans Narrow', 'Alfa Slab One', sans-serif;
+    font-size: 0.9em;
+    color: #aaa;
+    width: 410px;
+    top: 3em;
+    left: 1em;
+    text-align: justify;
+    /*display: inline-block;*/
+    /*text-align: left;*/
+    text-transform: none;
+    z-index: 11;
+}
+
+.zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
+.y.axis path {
+  display: none;
+}
+
+.tooltip {
+  position: fixed;
+  display: inline-block;
+  text-align: left;
+  text-transform: none;
+  z-index: 12;
+  overflow-y:auto;
+  width: 412px;
+  max-height: 86.5%;
+  padding: 14px;
+  background: white;
+  opacity: 1;
+  border: 0px;
+  border-radius: 0px;
+  font-family: 'PT Sans Narrow', 'Oswald', sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+}
+
+/*.tooltip p {
+  background: white;
+  border:0;
+  padding: 1px;
+  max-width: 180px;
+  margin-left: 2px;
+  color: blue;
+}*/
+
+.tick line {
+display:none;
+/*display: none;*/
+}
+
+.nvd3 .nv-axis.nv-y path.domain{
+ stroke-opacity: 0;
+}
+
+.line {
+  fill: none;
+}
+g.y.axis {
+  /*display: block;*/
+  display: none;
+}
+
+.label {
+  background-color: yellow;
+  font-family: 'PT Sans Narrow', 'Oswald', sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+}
+
+p {
+   margin-left: 0.5em;
+   margin-top: 0.1em;
+   margin-bottom: 0em;
+}
