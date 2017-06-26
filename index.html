@@ -51,7 +51,7 @@
     var width = window.innerHeight,
         height = window.innerHeight-50;
     var padding = 0;
-    var margin = { top: 50, right: 15, bottom: 40, left: 15};
+    var margin = { top: 50, right: 15, bottom: 0, left: 15};
     var zoom = d3.zoom()
         .on("zoom", zoomFunction);
 
@@ -62,8 +62,8 @@
        }));
 
     var yScale = d3.scaleLinear()
-        .range([height, 0])
-        .domain([83, d3.max(data, function(d) {
+        .range([height-40, 0])
+        .domain([87, d3.max(data, function(d) {
             return d.price;  // gets the input domain as the second column of array
         })]);
 
@@ -72,7 +72,7 @@
       .scale(xScale)
       // .ticks(50)
       // .ticks(d3.timeYear)
-      .tickPadding([0])
+      .tickPadding([-16])
       .tickFormat(d3.format("d"))
       .tickValues(d3.range(1490, 2010, 10));
 
@@ -127,12 +127,14 @@
         //.attr("opacity", function (d) {return d.price/100})
         .attr("fill", function (d) { return "#" + d.colorcode})
         .style("cursor", "pointer")
-        // .on("mouseover", function(d){
-        //   text.transition()
-        //     .duration(0)
-        //     .attr("z-index", 21)
-        //     .attr("background-color", "#aaa")
-        //   })
+
+        .on("mouseover", function(d){
+          svg.transition()
+            .duration(0)
+            .attr("scale", "1.3")
+            .attr("z-index", "21")
+            .attr("background-color", "#aaa")
+          })
 
         .on("click", function(d){
         // console.log(d.price)
@@ -152,7 +154,7 @@
             .style("text-align", "left")
           //  .attr("display", "inline-block")
           //  tooltip2.html("<a href=" + d.img + " width='500'></a>")
-            tooltip.html('<img src="'+d.img+'" width="384" style="padding-bottom: 7px">' + "<br/>" +
+            tooltip.html('<img src="'+d.img+'" width="384" style="padding-bottom: 0em">' + "<br/>" +
             "<span style='font-size: 1.2em; padding-bottom: 0.9em'>"+"<b>" + "&nbsp;#" + d.rank + ". " + d.name + " (" + d.year +")" + "</b>" + "</span>"+ "<br/>" +
             "<p>Artist: " + d.artist + "<br/>" + "Price: $" + d.price + "M" + "<br/>" +
             "<span style='padding-bottom: -10px'>" + "Dominant Color: " + "<span style='color:white; background-color:#"+d.colorcode+"'>" + "#" + d.colorcode + "</span>" + "</span>" + "<br/>" +
